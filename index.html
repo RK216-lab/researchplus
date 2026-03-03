@@ -11,70 +11,90 @@
 
 <body>
 
-  <div class="wizard-container">
+  <div class="app-container">
 
-    <!-- Header & Progress -->
-    <header>
-      <h1>Research+ Pro</h1>
-      <div class="step-indicator">
-        <div class="step active" id="step1-indicator">
-          <div class="step-num">1</div>
-          <div class="step-label">データ読込</div>
-        </div>
-        <div class="step" id="step2-indicator">
-          <div class="step-num">2</div>
-          <div class="step-label">グラフ設定</div>
-        </div>
-        <div class="step" id="step3-indicator">
-          <div class="step-num">3</div>
-          <div class="step-label">完了・保存</div>
-        </div>
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h1>Research+ Pro</h1>
       </div>
-    </header>
+      <div class="sidebar-nav">
+        <a href="#" class="nav-item active" data-target="tab-import">
+          <span class="nav-icon">📂</span>
+          1. データの追加
+        </a>
+        <a href="#" class="nav-item" data-target="tab-settings">
+          <span class="nav-icon">⚙️</span>
+          2. グラフ設定
+        </a>
+        <a href="#" class="nav-item" data-target="tab-chart">
+          <span class="nav-icon">📊</span>
+          3. 解析・表示
+        </a>
+      </div>
+    </nav>
 
-    <!-- Wizard Body area -->
-    <div class="wizard-body">
+    <!-- Main Content Area -->
+    <main class="content-area">
 
-      <!-- Step 1: Import -->
-      <div class="step-content active" id="step1">
+      <!-- Tab 1: Import Datasets -->
+      <div class="tab-pane active" id="tab-import">
+        <div class="section-header">
+          <h2 class="section-title">データの追加と管理</h2>
+          <p class="section-subtitle">CSVやTXTをドロップして一括で読み込みます。</p>
+        </div>
+
         <div class="drop-zone" id="dropArea">
           <input id="fileInput" type="file" accept=".csv, .txt" multiple />
-          <div class="drop-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2">
+          <div class="drop-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" x2="12" y1="3" y2="15" />
-            </svg></div>
-          <div class="drop-text">CSV または TXT ファイルを ここへドラッグ＆ドロップ</div>
-          <div class="drop-subtext">複数のファイルを選択して一括で重ね合わせられます。</div>
+            </svg>
+          </div>
+          <div class="drop-text">CSV または TXT ファイルをここへドロップ</div>
+          <div class="drop-subtext">複数ファイルを同時にドロップ可能（X軸・Y軸の自由選択対応）</div>
         </div>
 
         <div class="datasets-list" id="datasetsList">
-          <!-- Dataset cards injected here -->
+          <!-- Dataset cards are rendered here by app.js -->
+        </div>
+
+        <div class="hint-box">
+          💡 <strong>Hint:</strong> データを追加したら、左メニューの「2. グラフ設定」または「3. 解析・表示」へ進んでください。
         </div>
       </div>
 
-      <!-- Step 2: Settings -->
-      <div class="step-content" id="step2">
-        <div class="settings-grid">
+      <!-- Tab 2: Settings -->
+      <div class="tab-pane" id="tab-settings">
+        <div class="section-header">
+          <h2 class="section-title">グラフ設定</h2>
+          <p class="section-subtitle">共通のタイトルや軸ラベル、高度な解析オプションを設定します。</p>
+        </div>
 
-          <!-- Left Column -->
-          <div>
-            <h3 class="section-title">基本設定</h3>
+        <div class="settings-layout">
+          <!-- Settings Column 1 -->
+          <div class="settings-panel">
+            <h3 class="sub-title">基本設定 (Basic)</h3>
+
             <div class="input-group">
-              <label>全体のグラフタイトル</label>
+              <label>グラフのメインタイトル</label>
               <input type="text" id="globalTitle" placeholder="マクロファージ応答解析など">
             </div>
+
             <div class="input-group">
-              <label>縦軸（Y軸）のラベル</label>
+              <label>縦軸（Y軸）のラベル名</label>
               <input type="text" id="yAxisLabel" value="温度（℃）" placeholder="例: 電圧 (mV)">
             </div>
+
             <div class="input-row">
               <div class="input-group"><label>開始時間 (秒)</label><input type="number" id="startSec" step="any"
                   placeholder="Auto"></div>
               <div class="input-group"><label>終了時間 (秒)</label><input type="number" id="endSec" step="any"
                   placeholder="Auto"></div>
             </div>
+
             <div class="input-group">
               <label>X軸（時間/分）の目盛り間隔</label>
               <select id="xAxisInterval">
@@ -83,17 +103,17 @@
                 <option value="2">2分間隔</option>
                 <option value="5">5分間隔</option>
                 <option value="10">10分間隔</option>
-                <option value="auto">自動おまかせ</option>
+                <option value="auto">自動 (Auto)</option>
               </select>
             </div>
           </div>
 
-          <!-- Right Column -->
-          <div>
-            <h3 class="section-title">高度な解析オプション</h3>
+          <!-- Settings Column 2 -->
+          <div class="settings-panel">
+            <h3 class="sub-title">高度な解析 (Advanced)</h3>
 
             <div class="toggle-wrap">
-              <div class="toggle-label"><span>データの正規化 (Min-Max)</span><span class="toggle-desc">0〜1の割合で波形の形だけを比較</span>
+              <div class="toggle-label"><span>データの正規化 (Min-Max)</span><span class="toggle-desc">0〜1の割合で波形を揃えて比較</span>
               </div>
               <label class="switch"><input type="checkbox" id="useNorm"><span class="slider"></span></label>
             </div>
@@ -104,52 +124,59 @@
             </div>
             <div class="range-wrap hidden" id="maSettings">
               <div class="range-header"><span>ウィンドウサイズ</span><span id="maValue"
-                  style="font-weight:700; color:var(--primary);">5</span></div>
+                  style="color:var(--primary); font-weight:700;">5</span></div>
               <input type="range" id="maWindow" min="2" max="50" value="5">
             </div>
 
             <div class="toggle-wrap">
-              <div class="toggle-label"><span>対数Y軸 (Log Scale)</span><span class="toggle-desc">桁数が全く違うデータの比較に</span>
+              <div class="toggle-label"><span>対数Y軸 (Log Scale)</span><span class="toggle-desc">桁違いのデータを同時に比較</span>
               </div>
               <label class="switch"><input type="checkbox" id="useLogY"><span class="slider"></span></label>
             </div>
 
             <div class="toggle-wrap">
-              <div class="toggle-label"><span>ポイント表示</span><span class="toggle-desc">ホバーして正確な数値を確認</span></div>
+              <div class="toggle-label"><span>データポイントの表示</span><span class="toggle-desc">ホバーして正確な数値を確認</span></div>
               <label class="switch"><input type="checkbox" id="showPoints"><span class="slider"></span></label>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Step 3: Result Chart -->
-      <div class="step-content" id="step3">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 12px;">
-          <h3 class="section-title" style="margin:0;">解析完了</h3>
-          <div style="display:flex; gap:12px;">
-            <button id="downloadPNG" class="btn btn-secondary" style="padding: 10px 20px; font-size:13px;">画像を保存
-              (PNG)</button>
-            <button id="exportCSV" class="btn btn-secondary"
-              style="padding: 10px 20px; font-size:13px;">結合済CSVを抽出</button>
+      <!-- Tab 3: Chart Visualization -->
+      <div class="tab-pane" id="tab-chart">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div>
+            <h2 class="section-title">解析・表示</h2>
+            <p class="section-subtitle">グラフ上でマウスホイールによる「ズーム」、ドラッグによる「パン移動」が可能です。</p>
+          </div>
+          <div class="actions-bar" style="margin:0;">
+            <button id="downloadPNG" class="btn btn-primary" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+              </svg>
+              画像 (PNG)
+            </button>
+            <button id="exportCSV" class="btn btn-secondary" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="8" x2="16" y1="13" y2="13" />
+                <line x1="8" x2="16" y1="17" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+              結合CSV
+            </button>
           </div>
         </div>
+
         <div class="chart-wrap">
           <canvas id="chart"></canvas>
         </div>
-        <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top: 16px;">
-          💡 グラフ上でのマウスホイールで拡大縮小、ドラッグで移動が可能です。
-        </p>
       </div>
 
-    </div> <!-- /wizard-body -->
-
-    <!-- Footer Navigation -->
-    <footer>
-      <button class="btn btn-secondary hidden" id="btnBack">&larr; 戻る</button>
-      <div style="flex:1;"></div>
-      <button class="btn btn-primary" id="btnNext" disabled>グラフ設定へ <span style="font-size:18px;">&rarr;</span></button>
-    </footer>
-
+    </main>
   </div>
 
   <!-- Scripts -->
