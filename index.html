@@ -1,457 +1,961 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>DataPlotter Pro for Research</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --border: #e2e8f0;
-    --text: #1e293b;
-    --text-muted: #64748b;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --radius: 6px;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Research+ DataPlotter Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f3f6fc;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --border-color: rgba(226, 232, 240, 0.8);
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --primary: #4338ca;
+      --primary-hover: #3730a3;
+      --accent: #0ea5e9;
+      --accent-hover: #0284c7;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+      --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    margin: 0;
-    padding: 32px;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .container { max-width: 1100px; margin: 0 auto; }
-  
-  header { margin-bottom: 32px; border-bottom: 2px solid var(--border); padding-bottom: 16px; }
-  h1 { margin: 0; font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.025em; }
-  .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 32px 48px;
+      background: var(--bg-color);
+      background-image:
+        radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 0.03) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 0.03) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 0.03) 0, transparent 50%);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
 
-  .layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
-  @media (max-width: 950px) { .layout { grid-template-columns: 1fr; } }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      gap: 32px;
+      grid-template-columns: minmax(320px, 340px) 1fr;
+      align-items: start;
+    }
 
-  .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    padding: 24px;
-  }
+    @media (max-width: 1100px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
 
-  /* File Drop Area */
-  .drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 40px 20px;
-    text-align: center;
-    background: #fdfdfd;
-    transition: all 0.2s;
-    cursor: pointer;
-    margin-bottom: 24px;
-  }
-  .drop-zone.dragover { border-color: var(--primary); background: #eff6ff; }
-  .btn-upload {
-    display: inline-block;
-    padding: 8px 16px;
-    background: var(--primary);
-    color: white;
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  input[type=file] { display: none; }
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-  /* Forms */
-  .form-grid { display: grid; gap: 16px; margin-top: 8px; }
-  .section-label { 
-    font-size: 12px; font-weight: 600; color: var(--text-muted); 
-    text-transform: uppercase; letter-spacing: 0.05em; 
-    margin-top: 16px; border-bottom: 1px solid var(--border); padding-bottom: 4px;
-  }
-  
-  .input-group { display: flex; flex-direction: column; gap: 6px; }
-  label { font-size: 13px; font-weight: 500; color: var(--text); }
-  
-  input, select {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    font-size: 14px;
-    color: var(--text);
-    background: #fff;
-  }
-  input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.03em;
+    }
 
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
 
-  /* Actions */
-  .actions { display: flex; gap: 12px; margin-top: 32px; }
-  button {
-    flex: 1;
-    padding: 10px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-  }
-  .btn-main { background: var(--primary); color: white; }
-  .btn-main:hover { background: var(--primary-hover); }
-  .btn-sub { background: white; border-color: var(--border); color: var(--text); }
-  .btn-sub:hover { background: #f8fafc; border-color: #cbd5e1; }
-  button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-soft);
+      padding: 24px;
+    }
 
-  /* Chart & Preview */
-  .chart-wrap { margin-top: 32px; }
-  .canvas-container { height: 450px; position: relative; }
-  
-  .preview-section { 
-    margin-top: 32px; padding-top: 24px; border-top: 1px dotted var(--border); 
-  }
-  .preview-img { width: 100%; border-radius: 4px; border: 1px solid var(--border); margin-top: 12px; }
+    /* Sidebar Controls */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 24px 0 16px;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 8px;
+    }
 
-  .error { color: #be123c; font-size: 13px; font-weight: 500; margin-top: 8px; }
-  .info-text { font-size: 12px; color: var(--text-muted); }
-</style>
+    .section-title:first-child {
+      margin-top: 0;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    input,
+    select {
+      padding: 10px 14px;
+      border: 1px solid rgba(226, 232, 240, 1);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-main);
+      background: #fff;
+      box-shadow: var(--shadow-inner);
+      transition: var(--transition);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+
+    input[type="color"] {
+      padding: 4px;
+      height: 42px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Toggles */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: var(--radius-md);
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e1;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: var(--accent);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Range Slider */
+    .range-wrap {
+      margin-bottom: 16px;
+    }
+
+    .range-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    input[type=range] {
+      width: 100%;
+      padding: 0;
+      height: 6px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      border: none;
+      outline: none;
+      -webkit-appearance: none;
+      box-shadow: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Main Area */
+    .drop-zone {
+      border: 2px dashed rgba(67, 56, 202, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 32px 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.5);
+      transition: var(--transition);
+      cursor: pointer;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(67, 56, 202, 0.03);
+      transform: translateY(-2px);
+    }
+
+    .drop-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: var(--primary);
+      opacity: 0.8;
+    }
+
+    .drop-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .drop-subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    input[type=file] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Datasets List */
+    .datasets-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .dataset-card {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      position: relative;
+      border-left: 4px solid var(--ds-color, #ccc);
+    }
+
+    .dataset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dataset-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-remove {
+      background: #fef2f2;
+      color: #ef4444;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-remove:hover {
+      background: #fee2e2;
+    }
+
+    .ds-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+    }
+
+    @media (max-width: 768px) {
+      .ds-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Buttons */
+    button {
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(67, 56, 202, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: #cbd5e1;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Canvas area */
+    .chart-wrap {
+      height: 500px;
+      position: relative;
+      margin-top: 16px;
+      border-radius: var(--radius-lg);
+      background: #fff;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-inner);
+    }
+
+    /* Utilities */
+    .hidden {
+      display: none !important;
+    }
+
+    .badge {
+      background: #e0f2fe;
+      color: #0284c7;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
-  <header>
-    <h1>Research+</h1>
-  </header>
+  <div class="container">
+    <header>
+      <h1>Research+ Pro</h1>
+      <div class="header-actions">
+        <button id="plotBtn" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3v18h18" />
+            <path d="m19 9-5 5-4-4-3 3" />
+          </svg>
+          グラフ更新
+        </button>
+        <button id="downloadPNG" class="btn btn-outline" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" x2="12" y1="15" y2="3" />
+          </svg>
+          PNG保存
+        </button>
+        <button id="exportCSV" class="btn btn-outline" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="8" x2="16" y1="13" y2="13" />
+            <line x1="8" x2="16" y1="17" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+          CSV合体抽出
+        </button>
+      </div>
+    </header>
 
-  <div class="layout">
-    <main>
-      <div class="card">
-        <div class="drop-zone" id="dropArea">
-          <div style="font-size: 15px; margin-bottom: 12px; color: var(--text-muted);">解析するCSVファイルを入れてね</div>
-          <label class="btn-upload">ファイルを選択しようね<input id="fileInput" type="file" accept=".csv" /></label>
-          <div id="fileInfo" class="info-text" style="margin-top: 12px;"></div>
-          <div id="errMsg" class="error"></div>
+    <aside class="glass-card">
+      <div class="section-title">Global Settings</div>
+
+      <div class="input-group">
+        <label>全体のグラフタイトル</label>
+        <input type="text" id="globalTitle" placeholder="My Experiment Data">
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>開始時間 (秒)</label>
+          <input type="number" id="startSec" step="any" placeholder="Auto">
         </div>
-
-        <div class="section-label">グラフ設定だよ</div>
-        <div class="form-grid">
-          <div class="input-group">
-            <label>タイトル</label>
-            <input type="text" id="titleInput" placeholder="Graph Title">
-          </div>
-          <div class="row">
-            <div class="input-group">
-              <label>凡例名</label>
-              <input type="text" id="legendInput" value="温度 (°C)">
-            </div>
-            <div class="input-group">
-              <label>データ列 (Y軸)</label>
-              <select id="tempColSelect"></select>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-label">軸設定</div>
-        <div class="form-grid">
-          <div class="row">
-            <div class="input-group">
-              <label>時間列 (X軸/秒)</label>
-              <select id="timeColSelect"></select>
-            </div>
-            <div class="input-group">
-              <label>Index列</label>
-              <select id="indexColSelect"></select>
-            </div>
-          </div>
-          <div class="input-group" style="flex-direction: row; align-items: center; gap: 8px;">
-            <input type="checkbox" id="useIndexAsTime" style="width: auto;">
-            <label for="useIndexAsTime" style="margin: 0;">Index列を秒数として使用</label>
-          </div>
-          <div class="row">
-            <div class="input-group"><label>開始秒</label><input type="number" id="startSec" step="any" placeholder="Auto"></div>
-            <div class="input-group"><label>終了秒</label><input type="number" id="endSec" step="any" placeholder="Auto"></div>
-          </div>
-          <div class="row">
-            <div class="input-group">
-              <label>X軸目盛り間隔 (分)</label>
-              <select id="tickIntervalSelect">
-                <option value="0.5">0.5分 (30秒)</option>
-                <option value="1" selected>1分</option>
-                <option value="2">2分</option>
-                <option value="5">5分</option>
-                <option value="10">10分</option>
-              </select>
-            </div>
-            <div class="input-group">
-              <label>Y軸レンジ</label>
-              <select id="yAutoSelect">
-                <option value="auto">自動</option>
-                <option value="manual">手動</option>
-              </select>
-            </div>
-          </div>
-          <div id="yManualRow" class="row" style="display:none">
-            <div class="input-group"><label>Y軸最小値</label><input type="number" id="yMin" step="any"></div>
-            <div class="input-group"><label>Y軸最大値</label><input type="number" id="yMax" step="any"></div>
-          </div>
-        </div>
-
-        <div class="section-label">記録情報</div>
-        <div class="row">
-          <div class="input-group"><label>実験日</label><input type="date" id="expDate"></div>
-          <div class="input-group"><label>外気温 (°C)</label><input type="number" id="ambientTemp" step="any"></div>
-        </div>
-
-        <div class="actions">
-          <button id="plotBtn" class="btn-main">グラフ生成</button>
-          <button id="downloadPNG" class="btn-sub" disabled>画像保存 (PNG)</button>
-          <button id="exportCSV" class="btn-sub" disabled>CSV抽出</button>
-        </div>
-
-        <div class="chart-wrap">
-          <div class="canvas-container">
-            <canvas id="chart"></canvas>
-          </div>
-        </div>
-
-        <div id="previewWrap" class="preview-section" style="display:none">
-          <label style="color: var(--text-muted);">エクスポート用プレビュー (iPadは長押し保存)</label>
-          <img id="chartImage" class="preview-img" alt="Chart Output" />
+        <div class="input-group">
+          <label>終了時間 (秒)</label>
+          <input type="number" id="endSec" step="any" placeholder="Auto">
         </div>
       </div>
-    </main>
 
-    <aside>
-      <div class="card" style="padding: 16px;">
-        <h3 style="font-size: 14px; margin-top: 0; color: var(--text);">解析ガイド</h3>
-        <ul style="font-size: 13px; color: var(--text-muted); padding-left: 18px;">
-          <li>ファイル読み込み時に、タイトルはファイル名に自動更新されます。</li>
-          <li>X軸は内部で秒から分に変換してプロットされます。</li>
-          <li>研究発表用には「PNG保存」を使用して高精細な画像を取得してください。</li>
-        </ul>
+      <div class="input-group">
+        <label>X軸目盛り間隔 (分)</label>
+        <select id="tickIntervalSelect">
+          <option value="0.5">0.5分 (30秒)</option>
+          <option value="1" selected>1分</option>
+          <option value="2">2分</option>
+          <option value="5">5分</option>
+          <option value="10">10分</option>
+          <option value="auto">自動 (Auto)</option>
+        </select>
+      </div>
+
+      <div class="section-title">Research Analysis & Aesthetics</div>
+
+      <!-- Moving Average Toggle & Slider -->
+      <div class="toggle-wrap">
+        <div class="toggle-label">
+          <span>平滑化 (Moving Average)</span>
+          <span class="toggle-desc">ノイズ除去に役立ちます</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="useMA">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="range-wrap hidden" id="maSettings">
+        <div class="range-header">
+          <span>ウィンドウサイズ</span>
+          <span id="maValue" style="font-weight:600;color:var(--primary)">5</span>
+        </div>
+        <input type="range" id="maWindow" min="2" max="50" value="5">
+      </div>
+
+      <!-- Log Scale Y Toggle -->
+      <div class="toggle-wrap">
+        <div class="toggle-label">
+          <span>対数Y軸 (Log Scale)</span>
+          <span class="toggle-desc">桁違いのデータ比較用</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="useLogY">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Point Display Toggle -->
+      <div class="toggle-wrap">
+        <div class="toggle-label">
+          <span>データポイントの点表示</span>
+          <span class="toggle-desc">Hoverで詳細な値を確認できます</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="showPoints">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Y軸モード</label>
+          <select id="yAutoSelect">
+            <option value="auto">自動</option>
+            <option value="manual">手動</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row hidden" id="yManualRow">
+        <div class="input-group"><label>Y軸最小値</label><input type="number" id="yMin" step="any"></div>
+        <div class="input-group"><label>Y軸最大値</label><input type="number" id="yMax" step="any"></div>
+      </div>
+
+      <div
+        style="margin-top: 24px; padding: 12px; background: rgba(14,165,233,0.1); border-radius: 8px; font-size: 12px; color: #0284c7;">
+        <strong>💡 ヒント:</strong> グラフ上でマウスホイールを使うと<strong>ズーム</strong>、ドラッグで<strong>パン（移動）</strong>ができます。
       </div>
     </aside>
+
+    <main class="glass-card">
+      <div class="drop-zone" id="dropArea">
+        <input id="fileInput" type="file" accept=".csv, .txt" multiple />
+        <div class="drop-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" x2="12" y1="3" y2="15" />
+          </svg></div>
+        <div class="drop-text">CSVまたはTXTファイルをドラッグ＆ドロップ</div>
+        <div class="drop-subtext">またはここをクリックしてファイルを選択。<br>複数のファイルを重ねて表示できます！</div>
+      </div>
+
+      <div class="datasets-list" id="datasetsList">
+        <!-- Dataset cards will be injected here -->
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="chart"></canvas>
+      </div>
+    </main>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 
-<script>
-(() => {
-  const dropArea = document.getElementById('dropArea');
-  const fileInput = document.getElementById('fileInput');
-  const fileInfo = document.getElementById('fileInfo');
-  const errMsg = document.getElementById('errMsg');
-  const timeColSelect = document.getElementById('timeColSelect');
-  const tempColSelect = document.getElementById('tempColSelect');
-  const indexColSelect = document.getElementById('indexColSelect');
-  const useIndexAsTime = document.getElementById('useIndexAsTime');
-  const startSecInput = document.getElementById('startSec');
-  const endSecInput = document.getElementById('endSec');
-  const yMinInput = document.getElementById('yMin');
-  const yMaxInput = document.getElementById('yMax');
-  const titleInput = document.getElementById('titleInput');
-  const legendInput = document.getElementById('legendInput');
-  const plotBtn = document.getElementById('plotBtn');
-  const downloadPNG = document.getElementById('downloadPNG');
-  const exportCSV = document.getElementById('exportCSV');
-  const ctx = document.getElementById('chart').getContext('2d');
-  const expDateInput = document.getElementById('expDate');
-  const ambientTempInput = document.getElementById('ambientTemp');
-  const previewWrap = document.getElementById('previewWrap');
-  const chartImage = document.getElementById('chartImage');
-  const tickIntervalSelect = document.getElementById('tickIntervalSelect');
-  const yAutoSelect = document.getElementById('yAutoSelect');
-  const yManualRow = document.getElementById('yManualRow');
+  <script>
+    (() => {
+      const fileInput = document.getElementById('fileInput');
+      const dropArea = document.getElementById('dropArea');
+      const datasetsList = document.getElementById('datasetsList');
+      const plotBtn = document.getElementById('plotBtn');
+      const downloadPNG = document.getElementById('downloadPNG');
+      const exportCSV = document.getElementById('exportCSV');
+      const ctx = document.getElementById('chart').getContext('2d');
 
-  let parsedData = null;
-  let chartInstance = null;
+      // Settings elements
+      const globalTitle = document.getElementById('globalTitle');
+      const startSecInput = document.getElementById('startSec');
+      const endSecInput = document.getElementById('endSec');
+      const tickIntervalSelect = document.getElementById('tickIntervalSelect');
+      const yAutoSelect = document.getElementById('yAutoSelect');
+      const yManualRow = document.getElementById('yManualRow');
+      const yMinInput = document.getElementById('yMin');
+      const yMaxInput = document.getElementById('yMax');
 
-  ['dragenter','dragover','dragleave','drop'].forEach(ev => {
-    dropArea.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); });
-  });
-  ['dragenter','dragover'].forEach(ev => dropArea.addEventListener(ev, ()=> dropArea.classList.add('dragover')));
-  ['dragleave','drop'].forEach(ev => dropArea.addEventListener(ev, ()=> dropArea.classList.remove('dragover')));
-  
-  dropArea.addEventListener('drop', e => {
-    const f = e.dataTransfer.files && e.dataTransfer.files[0];
-    if (f) handleFile(f);
-  });
-  fileInput.addEventListener('change', e => {
-    const f = e.target.files && e.target.files[0];
-    if (f) handleFile(f);
-  });
+      // Feature elements
+      const useMA = document.getElementById('useMA');
+      const maSettings = document.getElementById('maSettings');
+      const maWindow = document.getElementById('maWindow');
+      const maValue = document.getElementById('maValue');
+      const useLogY = document.getElementById('useLogY');
+      const showPoints = document.getElementById('showPoints');
 
-  yAutoSelect.addEventListener('change', (e) => {
-    yManualRow.style.display = e.target.value === 'manual' ? 'grid' : 'none';
-  });
+      let datasetsData = [];
+      let chartInstance = null;
+      const colorPalette = ['#4338ca', '#ec4899', '#f59e0b', '#10b981', '#0ea5e9', '#8b5cf6', '#ef4444', '#14b8a6'];
 
-  function handleFile(file){
-    if (!file.name.toLowerCase().endsWith('.csv')) { 
-      errMsg.textContent = 'CSV形式のみ対応しています'; return; 
-    }
-    errMsg.textContent = '';
-    titleInput.value = file.name.replace(/\.csv$/i,'');
-    fileInfo.textContent = `${file.name} を読込中...`;
+      // --- UI Event Listeners ---
+      useMA.addEventListener('change', (e) => maSettings.classList.toggle('hidden', !e.target.checked));
+      maWindow.addEventListener('input', (e) => maValue.textContent = e.target.value);
+      yAutoSelect.addEventListener('change', (e) => yManualRow.classList.toggle('hidden', e.target.value !== 'manual'));
 
-    Papa.parse(file, {
-      header: false,
-      complete: (results) => {
-        const rows = results.data.filter(r => r.length > 1);
-        let headerIdx = 0;
-        const keywords = ['time','index','秒','temp','温度'];
-        for (let i=0; i<Math.min(10, rows.length); i++){
-          if (rows[i].some(c => keywords.some(k => (''+c).toLowerCase().includes(k)))) {
-            headerIdx = i; break;
-          }
-        }
-        const header = rows[headerIdx].map(c => (''+c).trim());
-        const data = rows.slice(headerIdx + 1).map(r => {
-          const o = {};
-          header.forEach((h, i) => o[h] = r[i]);
-          return o;
-        });
-        parsedData = { header, data };
-        fileInfo.textContent = `${file.name} (データ数: ${data.length})`;
-        initSelectors(header);
-      }
-    });
-  }
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => dropArea.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+      ['dragenter', 'dragover'].forEach(ev => dropArea.addEventListener(ev, () => dropArea.classList.add('dragover')));
+      ['dragleave', 'drop'].forEach(ev => dropArea.addEventListener(ev, () => dropArea.classList.remove('dragover')));
 
-  function initSelectors(fields){
-    [timeColSelect, tempColSelect, indexColSelect].forEach(s => {
-      s.innerHTML = '';
-      fields.forEach(f => {
-        const o = document.createElement('option');
-        o.value = f; o.textContent = f;
-        s.appendChild(o);
+      dropArea.addEventListener('drop', e => processFiles(e.dataTransfer.files));
+      fileInput.addEventListener('change', e => {
+        processFiles(e.target.files);
+        e.target.value = ''; // Reset
       });
-    });
-    const low = fields.map(f => f.toLowerCase());
-    timeColSelect.selectedIndex = Math.max(0, low.findIndex(f => /time|秒/.test(f)));
-    tempColSelect.selectedIndex = Math.max(0, low.findIndex(f => /temp|温度|℃/.test(f)));
-    indexColSelect.selectedIndex = Math.max(0, low.findIndex(f => /index|idx|no/.test(f)));
-    
-    // Auto-range initial
-    const firstColData = parsedData.data.map(r => parseFloat(r[timeColSelect.value])).filter(v => !isNaN(v));
-    if (firstColData.length) {
-      startSecInput.value = Math.min(...firstColData);
-      endSecInput.value = Math.max(...firstColData);
-    }
-  }
 
-  plotBtn.addEventListener('click', () => {
-    if (!parsedData) return;
-    const tCol = useIndexAsTime.checked ? indexColSelect.value : timeColSelect.value;
-    const pCol = tempColSelect.value;
-    const start = parseFloat(startSecInput.value) || 0;
-    const end = parseFloat(endSecInput.value) || Infinity;
+      // --- File Processing ---
+      function processFiles(files) {
+        if (!files.length) return;
+        Array.from(files).forEach(file => {
+          const ext = file.name.split('.').pop().toLowerCase();
+          if (ext !== 'csv' && ext !== 'txt') return;
 
-    const filtered = parsedData.data
-      .map(r => ({ x: parseFloat(r[tCol]), y: parseFloat(r[pCol]) }))
-      .filter(d => !isNaN(d.x) && !isNaN(d.y) && d.x >= start && d.x <= end)
-      .map(d => ({ x: d.x / 60, y: d.y })); // 秒を分に変換
+          Papa.parse(file, {
+            header: false,
+            complete: (results) => {
+              const rows = results.data.filter(r => r.length > 1);
+              if (!rows.length) return;
 
-    if (chartInstance) chartInstance.destroy();
-    
-    chartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: legendInput.value,
-          data: filtered,
-          borderColor: '#2563eb',
-          borderWidth: 1.5,
-          pointRadius: 0,
-          tension: 0.1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: { display: true, text: titleInput.value, font: { size: 16, weight: '600' }, color: '#1e293b' },
-          legend: { position: 'top', labels: { font: { size: 12 } } }
-        },
-        scales: {
-          x: { 
-            type: 'linear', 
-            title: { display: true, text: 'Time (minutes)', font: { size: 13, weight: '500' } },
-            ticks: { stepSize: parseFloat(tickIntervalSelect.value) }
-          },
-          y: { 
-            title: { display: true, text: legendInput.value, font: { size: 13, weight: '500' } },
-            min: yAutoSelect.value === 'manual' ? parseFloat(yMinInput.value) : undefined,
-            max: yAutoSelect.value === 'manual' ? parseFloat(yMaxInput.value) : undefined
+              let headerIdx = 0;
+              const keywords = ['time', 'index', '秒', 'temp', '温度', 'value', 'val'];
+              for (let i = 0; i < Math.min(10, rows.length); i++) {
+                if (rows[i].some(c => keywords.some(k => ('' + c).toLowerCase().includes(k)))) {
+                  headerIdx = i; break;
+                }
+              }
+              const header = rows[headerIdx].map(c => ('' + c).trim() || 'Unknown');
+              const data = rows.slice(headerIdx + 1).map(r => {
+                const o = {};
+                header.forEach((h, i) => o[h] = r[i]);
+                return o;
+              });
+
+              // Default column selection
+              const low = header.map(f => f.toLowerCase());
+              const xIdx = Math.max(0, low.findIndex(f => /time|秒|sec/.test(f)));
+              const yIdx = Math.max(0, low.findIndex(f => /temp|温度|℃|val/.test(f)));
+
+              const dsId = 'ds_' + Date.now() + Math.floor(Math.random() * 1000);
+              datasetsData.push({
+                id: dsId,
+                filename: file.name,
+                legend: file.name.replace(/\.(csv|txt)$/i, ''),
+                color: colorPalette[datasetsData.length % colorPalette.length],
+                header: header,
+                data: data,
+                xCol: header[xIdx],
+                yCol: header[yIdx]
+              });
+
+              if (datasetsData.length === 1 && !globalTitle.value) {
+                globalTitle.value = "Experiment Analysis";
+              }
+
+              renderDatasetsList();
+              autoSetTimeRange();
+            }
+          });
+        });
+      }
+
+      function autoSetTimeRange() {
+        if (!datasetsData.length) return;
+        let minT = Infinity, maxT = -Infinity;
+        datasetsData.forEach(ds => {
+          ds.data.forEach(row => {
+            const val = parseFloat(row[ds.xCol]);
+            if (!isNaN(val)) {
+              if (val < minT) minT = val;
+              if (val > maxT) maxT = val;
+            }
+          });
+        });
+        if (minT !== Infinity && startSecInput.value === '') startSecInput.value = minT;
+        if (maxT !== -Infinity && endSecInput.value === '') endSecInput.value = maxT;
+      }
+
+      function renderDatasetsList() {
+        datasetsList.innerHTML = '';
+        datasetsData.forEach(ds => {
+          const card = document.createElement('div');
+          card.className = 'dataset-card';
+          card.style.setProperty('--ds-color', ds.color);
+
+          let xOpts = ds.header.map(h => `<option value="${h}" ${h === ds.xCol ? 'selected' : ''}>${h}</option>`).join('');
+          let yOpts = ds.header.map(h => `<option value="${h}" ${h === ds.yCol ? 'selected' : ''}>${h}</option>`).join('');
+
+          card.innerHTML = `
+        <div class="dataset-header">
+          <div class="dataset-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            ${ds.filename} <span class="badge">${ds.data.length} rows</span>
+          </div>
+          <button class="btn-remove" data-id="${ds.id}">削除</button>
+        </div>
+        <div class="ds-grid">
+          <div class="input-group">
+            <label>凡例名 (表示箇所)</label>
+            <input type="text" value="${ds.legend}" class="inp-legend" data-id="${ds.id}">
+          </div>
+          <div class="input-group">
+            <label>色</label>
+            <input type="color" value="${ds.color}" class="inp-color" data-id="${ds.id}">
+          </div>
+          <div class="input-group">
+            <label>X軸用データ列</label>
+            <select class="inp-xcol" data-id="${ds.id}">${xOpts}</select>
+          </div>
+          <div class="input-group">
+            <label>Y軸用データ列</label>
+            <select class="inp-ycol" data-id="${ds.id}">${yOpts}</select>
+          </div>
+        </div>
+      `;
+          datasetsList.appendChild(card);
+        });
+
+        // Add event listeners for new elements
+        document.querySelectorAll('.btn-remove').forEach(btn => btn.addEventListener('click', e => {
+          datasetsData = datasetsData.filter(d => d.id !== e.target.dataset.id);
+          renderDatasetsList();
+        }));
+        document.querySelectorAll('.inp-legend').forEach(el => el.addEventListener('input', e => {
+          datasetsData.find(d => d.id === e.target.dataset.id).legend = e.target.value;
+        }));
+        document.querySelectorAll('.inp-color').forEach(el => el.addEventListener('input', e => {
+          const ds = datasetsData.find(d => d.id === e.target.dataset.id);
+          ds.color = e.target.value;
+          e.target.closest('.dataset-card').style.setProperty('--ds-color', e.target.value);
+        }));
+        document.querySelectorAll('.inp-xcol').forEach(el => el.addEventListener('change', e => {
+          datasetsData.find(d => d.id === e.target.dataset.id).xCol = e.target.value;
+        }));
+        document.querySelectorAll('.inp-ycol').forEach(el => el.addEventListener('change', e => {
+          datasetsData.find(d => d.id === e.target.dataset.id).yCol = e.target.value;
+        }));
+      }
+
+      // --- Math Utilities ---
+      function movingAverage(data, windowSize) {
+        if (windowSize <= 1) return data;
+        const result = [];
+        for (let i = 0; i < data.length; i++) {
+          let sum = 0;
+          let count = 0;
+          for (let j = Math.max(0, i - windowSize + 1); j <= i; j++) {
+            sum += data[j].y;
+            count++;
           }
+          result.push({ x: data[i].x, y: sum / count });
         }
+        return result;
       }
-    });
 
-    downloadPNG.disabled = false;
-    exportCSV.disabled = false;
-    previewWrap.style.display = 'none';
-  });
+      // --- Plotting ---
+      plotBtn.addEventListener('click', () => {
+        if (!datasetsData.length) return;
 
-  downloadPNG.addEventListener('click', () => {
-    if (!chartInstance) return;
-    const chartCanvas = document.getElementById('chart');
-    const ratio = window.devicePixelRatio || 1;
-    
-    const outCanvas = document.createElement('canvas');
-    const metaNeeded = (expDateInput.value || ambientTempInput.value);
-    const metaHeight = metaNeeded ? 50 : 0;
-    
-    outCanvas.width = chartCanvas.width;
-    outCanvas.height = chartCanvas.height + (metaHeight * ratio);
-    const outCtx = outCanvas.getContext('2d');
-    
-    outCtx.fillStyle = '#ffffff';
-    outCtx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-    
-    const img = new Image();
-    img.onload = () => {
-      outCtx.drawImage(img, 0, 0);
-      if (metaNeeded) {
-        outCtx.fillStyle = '#64748b';
-        outCtx.font = `${12 * ratio}px sans-serif`;
-        let text = '';
-        if (expDateInput.value) text += `Date: ${expDateInput.value}  `;
-        if (ambientTempInput.value) text += `Ambient: ${ambientTempInput.value} °C`;
-        outCtx.fillText(text, 20 * ratio, chartCanvas.height + (25 * ratio));
-      }
-      const dataUrl = outCanvas.toDataURL('image/png');
-      chartImage.src = dataUrl;
-      previewWrap.style.display = 'block';
-      
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = `${titleInput.value || 'graph'}.png`;
-      link.click();
-    };
-    img.src = chartCanvas.toDataURL('image/png');
-  });
+        const startTime = parseFloat(startSecInput.value) || 0;
+        const endTime = parseFloat(endSecInput.value) || Infinity;
+        const doMA = useMA.checked;
+        const maWin = parseInt(maWindow.value, 10);
 
-  exportCSV.addEventListener('click', () => {
-    if (!chartInstance) return;
-    const data = chartInstance.data.datasets[0].data;
-    const csv = 'Time(min),' + legendInput.value + '\n' + data.map(d => `${d.x},${d.y}`).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${titleInput.value}_extracted.csv`;
-    a.click();
-  });
-})();
-</script>
+        const chartDatasets = datasetsData.map(ds => {
+          let pts = ds.data
+            .map(r => ({ x: parseFloat(r[ds.xCol]), y: parseFloat(r[ds.yCol]) }))
+            .filter(d => !isNaN(d.x) && !isNaN(d.y) && d.x >= startTime && d.x <= endTime)
+            .sort((a, b) => a.x - b.x); // sort by X just in case
+
+          if (doMA) pts = movingAverage(pts, maWin);
+
+          // Convert seconds to minutes for display
+          pts = pts.map(d => ({ x: d.x / 60, y: d.y }));
+
+          return {
+            label: ds.legend,
+            data: pts,
+            borderColor: ds.color,
+            backgroundColor: ds.color,
+            borderWidth: 2,
+            pointRadius: showPoints.checked ? 3 : 0,
+            pointHoverRadius: 6,
+            tension: 0.1
+          };
+        });
+
+        if (chartInstance) chartInstance.destroy();
+
+        // X Axis Tick Config
+        let xTickConfig = {};
+        if (tickIntervalSelect.value !== 'auto') {
+          xTickConfig = { stepSize: parseFloat(tickIntervalSelect.value) };
+        }
+
+        chartInstance = new Chart(ctx, {
+          type: 'line',
+          data: { datasets: chartDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              title: { display: !!globalTitle.value, text: globalTitle.value, font: { size: 18, weight: '700', family: 'Outfit' } },
+              legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Outfit', size: 13 } } },
+              tooltip: {
+                backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                titleFont: { family: 'Outfit', size: 13 },
+                bodyFont: { family: 'Outfit', size: 13 },
+                padding: 12,
+                cornerRadius: 8,
+                callbacks: {
+                  title: (ctx) => `Time: ${ctx[0].parsed.x.toFixed(2)} min`,
+                }
+              },
+              zoom: {
+                pan: { enabled: true, mode: 'xy' },
+                zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }
+              }
+            },
+            scales: {
+              x: {
+                type: 'linear',
+                title: { display: true, text: 'Time (minutes)', font: { size: 14, weight: '600', family: 'Outfit' } },
+                ticks: xTickConfig,
+                grid: { color: 'rgba(226, 232, 240, 0.6)' }
+              },
+              y: {
+                type: useLogY.checked ? 'logarithmic' : 'linear',
+                title: { display: true, text: 'Value', font: { size: 14, weight: '600', family: 'Outfit' } },
+                min: yAutoSelect.value === 'manual' && yMinInput.value !== '' ? parseFloat(yMinInput.value) : undefined,
+                max: yAutoSelect.value === 'manual' && yMaxInput.value !== '' ? parseFloat(yMaxInput.value) : undefined,
+                grid: { color: 'rgba(226, 232, 240, 0.6)' }
+              }
+            }
+          }
+        });
+
+        downloadPNG.disabled = false;
+        exportCSV.disabled = false;
+      });
+
+      // --- Download PNG ---
+      downloadPNG.addEventListener('click', () => {
+        if (!chartInstance) return;
+
+        // Create a temporary canvas with white background
+        const originalCanvas = document.getElementById('chart');
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = originalCanvas.width;
+        outCanvas.height = originalCanvas.height;
+
+        const outCtx = outCanvas.getContext('2d');
+        outCtx.fillStyle = '#ffffff';
+        outCtx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+        outCtx.drawImage(originalCanvas, 0, 0);
+
+        const a = document.createElement('a');
+        a.href = outCanvas.toDataURL('image/png', 1.0);
+        a.download = `${globalTitle.value || 'chart'}.png`;
+        a.click();
+      });
+
+      // --- Export CSV (Combined) ---
+      exportCSV.addEventListener('click', () => {
+        if (!chartInstance) return;
+
+        // We collect all datasets data into a single CSV
+        // Using a map to group by Time
+        const timeMap = new Map();
+        let headers = ['Time(min)'];
+
+        chartInstance.data.datasets.forEach(ds => {
+          headers.push(ds.label);
+          ds.data.forEach(pt => {
+            const tStr = pt.x.toFixed(4); // limit precision to match keys
+            if (!timeMap.has(tStr)) timeMap.set(tStr, {});
+            timeMap.get(tStr)[ds.label] = pt.y;
+          });
+        });
+
+        // Sort times
+        const times = Array.from(timeMap.keys()).sort((a, b) => parseFloat(a) - parseFloat(b));
+
+        let csvStr = headers.join(',') + '\n';
+        times.forEach(t => {
+          let row = [t];
+          for (let i = 1; i < headers.length; i++) {
+            const val = timeMap.get(t)[headers[i]];
+            row.push(val !== undefined ? val : '');
+          }
+          csvStr += row.join(',') + '\n';
+        });
+
+        const blob = new Blob([csvStr], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${globalTitle.value || 'extracted_data'}.csv`;
+        a.click();
+      });
+
+    })();
+  </script>
 </body>
+
 </html>
