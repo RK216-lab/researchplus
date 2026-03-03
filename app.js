@@ -61,6 +61,9 @@ maWindow.addEventListener('input', (e) => maValue.textContent = e.target.value);
 dropArea.addEventListener('drop', e => processFiles(e.dataTransfer.files));
 fileInput.addEventListener('change', e => { processFiles(e.target.files); e.target.value = ''; });
 
+const addPastedData = document.getElementById('addPastedData');
+const pasteInput = document.getElementById('pasteInput');
+
 // File Processing
 function processFiles(files) {
   if (!files.length) return;
@@ -71,49 +74,87 @@ function processFiles(files) {
 
   let processedCount = 0;
   fileArray.forEach(file => {
-    Papa.parse(file, {
-      header: false, skipEmptyLines: true,
-      complete: (results) => {
-        const rows = results.data;
-        if (rows.length < 2) { processedCount++; return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result;
+      parseAndAddDataset(file.name, content);
+      processedCount++;
+      if (processedCount === fileArray.length) {
+        finishProcessing();
+      }
+    };
+    reader.readAsText(file);
+  });
+}
 
-        let headerIdx = 0;
-        const keywords = ['time', 'index', '秒', 'temp', '温度', 'value', 'val'];
-        for (let i = 0; i < Math.min(10, rows.length); i++) {
-          if (rows[i].some(c => keywords.some(k => ('' + c).toLowerCase().includes(k)))) {
-            headerIdx = i; break;
-          }
-        }
-        const header = rows[headerIdx].map(c => ('' + c).trim() || 'Col');
-        const data = rows.slice(headerIdx + 1).map(r => {
-          const o = {}; header.forEach((h, i) => o[h] = r[i]); return o;
-        });
+// Paste Processing
+addPastedData.addEventListener('click', () => {
+  const content = pasteInput.value.trim();
+  if (!content) return;
 
-        const low = header.map(f => f.toLowerCase());
-        const xIdx = Math.max(0, low.findIndex(f => /time|秒|sec/.test(f)));
-        let yIdx = Math.max(0, low.findIndex(f => /temp|温度|℃|val|ch/.test(f)));
-        if (xIdx === yIdx && header.length > 1) yIdx = xIdx === 0 ? 1 : 0;
+  parseAndAddDataset("Pasted Data", content);
+  pasteInput.value = '';
+  finishProcessing();
+});
 
-        const dsId = 'ds_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-        datasetsData.push({
-          id: dsId, filename: file.name, legend: file.name.replace(/\.(csv|txt)$/i, ''),
-          color: colorPalette[datasetsData.length % colorPalette.length],
-          header: header, data: data, xCol: header[xIdx], yCol: header[yIdx]
-        });
+function parseAndAddDataset(defaultName, rawData) {
+  let lines = rawData.split(/\r?\n/).filter(l => l.trim() !== '');
+  let legend = defaultName.replace(/\.(csv|txt)$/i, '');
+  let csvContent = rawData;
 
-        if (datasetsData.length === 1 && !globalTitle.value) {
-          globalTitle.value = "Experiment Analysis " + new Date().toISOString().split('T')[0];
-        }
+  // Check if first line is a title (doesn't contain typical CSV delimiters but contains letters)
+  if (lines.length > 1) {
+    const firstLine = lines[0];
+    const hasDelimiter = /[,\t;|]/.test(firstLine);
+    const hasNumbers = /\d/.test(firstLine);
+    const hasLetters = /[a-zA-Z\u3040-\u30ff\u4e00-\u9faf]/.test(firstLine);
 
-        processedCount++;
-        if (processedCount === fileArray.length) {
-          autoSetTimeRange();
-          renderDatasetsList();
-          // Optionally auto switch to chart? No, user might want to add more. Let them stay here.
+    if (!hasDelimiter && (hasLetters || !hasNumbers)) {
+      legend = firstLine.trim();
+      csvContent = lines.slice(1).join('\n');
+    }
+  }
+
+  Papa.parse(csvContent, {
+    header: false, skipEmptyLines: true,
+    complete: (results) => {
+      const rows = results.data;
+      if (rows.length < 2) return;
+
+      let headerIdx = 0;
+      const keywords = ['time', 'index', '秒', 'temp', '温度', 'value', 'val'];
+      for (let i = 0; i < Math.min(10, rows.length); i++) {
+        if (rows[i].some(c => keywords.some(k => ('' + c).toLowerCase().includes(k)))) {
+          headerIdx = i; break;
         }
       }
-    });
+      const header = rows[headerIdx].map(c => ('' + c).trim() || 'Col');
+      const data = rows.slice(headerIdx + 1).map(r => {
+        const o = {}; header.forEach((h, i) => o[h] = r[i]); return o;
+      });
+
+      const low = header.map(f => f.toLowerCase());
+      const xIdx = Math.max(0, low.findIndex(f => /time|秒|sec/.test(f)));
+      let yIdx = Math.max(0, low.findIndex(f => /temp|温度|℃|val|ch/.test(f)));
+      if (xIdx === yIdx && header.length > 1) yIdx = xIdx === 0 ? 1 : 0;
+
+      const dsId = 'ds_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      datasetsData.push({
+        id: dsId, filename: defaultName, legend: legend,
+        color: colorPalette[datasetsData.length % colorPalette.length],
+        header: header, data: data, xCol: header[xIdx], yCol: header[yIdx]
+      });
+
+      if (datasetsData.length === 1 && !globalTitle.value) {
+        globalTitle.value = "Experiment Analysis " + new Date().toISOString().split('T')[0];
+      }
+    }
   });
+}
+
+function finishProcessing() {
+  autoSetTimeRange();
+  renderDatasetsList();
 }
 
 function autoSetTimeRange() {

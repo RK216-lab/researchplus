@@ -385,6 +385,61 @@ input[type=file] {
   cursor: pointer;
 }
 
+/* Import Divider */
+.import-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 32px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.import-divider::before,
+.import-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.import-divider span {
+  padding: 0 16px;
+}
+
+/* Paste Section */
+.paste-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.paste-header {
+  margin-bottom: 12px;
+}
+
+#pasteInput {
+  width: 100%;
+  height: 150px;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 13px;
+  color: var(--text-main);
+  background: #f8fafc;
+  transition: var(--transition);
+  resize: vertical;
+}
+
+#pasteInput:focus {
+  border-color: var(--primary);
+  outline: none;
+  background: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
 /* Datasets List */
 .datasets-list {
   display: grid;

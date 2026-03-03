@@ -57,6 +57,22 @@
           <div class="drop-subtext">複数ファイルを同時にドロップ可能（X軸・Y軸の自由選択対応）</div>
         </div>
 
+        <div class="import-divider">
+          <span>または</span>
+        </div>
+
+        <div class="paste-section">
+          <div class="paste-header">
+            <h3 class="sub-title" style="margin-bottom: 8px;">テキストを直接貼り付け</h3>
+            <p class="section-subtitle" style="margin-bottom: 16px;">1行目にタイトル（例：Sample A）を入れると、自動で凡例名になります。</p>
+          </div>
+          <textarea id="pasteInput" placeholder="Sample A&#10;0, 25.5&#10;60, 26.1&#10;120, 26.8..."></textarea>
+          <button id="addPastedData" class="btn btn-secondary"
+            style="margin-top: 12px; width: 100%; justify-content: center;">
+            <span class="nav-icon">➕</span> データを追加
+          </button>
+        </div>
+
         <div class="datasets-list" id="datasetsList">
           <!-- Dataset cards are rendered here by app.js -->
         </div>
