@@ -154,6 +154,29 @@
               <div class="toggle-label"><span>データポイントの表示</span><span class="toggle-desc">ホバーして正確な数値を確認</span></div>
               <label class="switch"><input type="checkbox" id="showPoints"><span class="slider"></span></label>
             </div>
+
+            <div class="input-row" style="margin-top:20px;">
+              <div class="input-group">
+                <label>解析範囲（開始分）</label>
+                <input type="number" id="analysisStart" step="any" placeholder="Auto">
+              </div>
+              <div class="input-group">
+                <label>解析範囲（終了分）</label>
+                <input type="number" id="analysisEnd" step="any" placeholder="Auto">
+              </div>
+            </div>
+            <p class="section-subtitle" style="margin-top:-10px; margin-bottom:20px; font-size:12px;">
+              ※指定範囲内でRange（ΔT）などを算出します。</p>
+
+            <div class="toggle-wrap">
+              <div class="toggle-label"><span>プロット図形（白黒印刷用）</span><span class="toggle-desc">データごとに異なる図形を表示</span></div>
+              <label class="switch"><input type="checkbox" id="useShapes"><span class="slider"></span></label>
+            </div>
+            <div class="range-wrap hidden" id="shapeSettings">
+              <div class="range-header"><span>図形表示の間隔（分）</span><span id="shapeIntervalValue"
+                  style="color:var(--primary); font-weight:700;">5</span></div>
+              <input type="range" id="shapeInterval" min="1" max="30" value="5">
+            </div>
           </div>
         </div>
       </div>
@@ -190,6 +213,38 @@
         <div class="chart-wrap">
           <canvas id="chart"></canvas>
         </div>
+
+        <div class="analysis-table-wrap" style="margin-top:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px;">
+            <h3 class="section-title" style="font-size:16px; margin:0;">エンタルピー＆効率サマリー</h3>
+            <div style="display:flex; gap:8px;">
+              <button id="toggleRangeBtn" class="btn btn-secondary"
+                style="padding: 6px 12px; font-size: 12px; height: 30px;">
+                ⚙️ 解析範囲を個別に微調整
+              </button>
+              <button id="copyTableBtn" class="btn btn-primary"
+                style="padding: 6px 12px; font-size: 12px; height: 30px;">
+                📋 表全体をコピー
+              </button>
+            </div>
+          </div>
+          <table class="analysis-table hide-range-col" id="analysisTable">
+            <thead>
+              <tr>
+                <th>データ名（凡例）</th>
+                <th class="col-range">解析範囲 <span style="font-size:11px; font-weight:normal;">(個別設定)</span></th>
+                <th>実験結果</th>
+                <th>理論値</th>
+                <th>エネルギー効率</th>
+              </tr>
+            </thead>
+            <tbody id="analysisTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center; padding:24px; color:#94a3b8;">データがありません</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </main>
@@ -200,8 +255,44 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-  <script src="app.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 
+  <!-- Individual Dataset Edit Modal -->
+  <dialog id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">データクリッピング</h3>
+        <button id="closeModal" class="btn-remove">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="chart-wrap" style="height: 300px; min-height: 300px; padding: 12px; margin-bottom: 20px;">
+          <canvas id="modalChart"></canvas>
+        </div>
+        <div class="edit-controls">
+          <div class="input-row">
+            <div class="input-group">
+              <label>クリップ開始（秒）</label>
+              <input type="number" id="modalTrimStart" step="any" placeholder="0">
+            </div>
+            <div class="input-group">
+              <label>クリップ終了（秒）</label>
+              <input type="number" id="modalTrimEnd" step="any" placeholder="末尾">
+            </div>
+          </div>
+          <div class="toggle-wrap" style="margin-bottom: 0;">
+            <div class="toggle-label"><span>開始時間を0に揃える</span><span class="toggle-desc">クリップ開始点をX=0としてシフトします</span></div>
+            <label class="switch"><input type="checkbox" id="modalAlignZero"><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveModal" class="btn btn-primary" style="width: 100%; justify-content: center;">保存して適用</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
 </body>
 
 </html>
