@@ -195,15 +195,13 @@ function autoSetTimeRange() {
   if (!datasetsData.length) return;
   let minT = Infinity, maxT = -Infinity;
   datasetsData.forEach(ds => {
-    ds.data.forEach(row => {
-      const val = parseFloat(row[ds.xCol]);
-      if (!isNaN(val)) {
-        if (val < minT) minT = val;
-        if (val > maxT) maxT = val;
-      }
+    const pts = getDatasetPoints(ds);
+    pts.forEach(p => {
+      if (p.x < minT) minT = p.x;
+      if (p.x > maxT) maxT = p.x;
     });
   });
-  if (minT !== Infinity && startSecInput.value === '') startSecInput.value = minT;
+  if (minT !== Infinity && startSecInput.value === '') startSecInput.value = Math.max(0, minT);
   if (maxT !== -Infinity && endSecInput.value === '') endSecInput.value = maxT;
 }
 
@@ -697,12 +695,15 @@ exportCSV.addEventListener('click', () => {
     });
   });
 
-  const times = Array.from(timeMap.keys()).sort((a, b) => parseFloat(a) - parseFloat(b));
+  const timesSorted = Array.from(timeMap.keys()).map(t => parseFloat(t)).sort((a, b) => a - b);
   let csvStr = headers.join(',') + '\n';
-  times.forEach(t => {
-    let row = [t];
+  const tGlobalOffset = timesSorted.length > 0 ? timesSorted[0] : 0;
+
+  timesSorted.forEach(t => {
+    const tStr = t.toFixed(4);
+    let row = [(t - tGlobalOffset).toFixed(4)];
     for (let i = 1; i < headers.length; i++) {
-      const val = timeMap.get(t)[headers[i]];
+      const val = timeMap.get(tStr)[headers[i]];
       row.push(val !== undefined ? val : '');
     }
     csvStr += row.join(',') + '\n';
